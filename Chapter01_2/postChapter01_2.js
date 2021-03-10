@@ -28,25 +28,28 @@ function statement(invoice, plays){
         }
         return result;
     }
-
+    function volumeCreditsFor(aPerformance){
+        let volumeCredits = 0;
+        volumeCredits += Math.max(aPerformance.audience - 30, 0);
+        if("comedy" === playFor(aPerformance).type)
+            volumeCredits += Math.max(aPerformance.audience / 5);
+        return volumeCredits;
+    }
+    function format(aNumber){
+        return new Intl.NumberFormat("en-US", {
+            style : "currency", currency: "USD", minimumFractionDigits: 2
+        }).format(aNumber);
+    }
     let totalAmount = 0;
     let volumeCredits = 0;
     let result = `청구 내역 (고객명 ${invoice.customer})\n`;
-    // Intl : https://developer.mozilla.org/ko/docs/Web/JavaScript/Reference/Global_Objects/Intl 각 언어에 맞게 비교 기능.
-    const format = new Intl.NumberFormat("en-US", {
-        style : "currency", currency: "USD", minimumFractionDigits: 2
-    }).format;
     
-    for(let aPerformance of invoice.performances){
-
-        let thisAmount = amountFor(aPerformance);
+    for(let perf of invoice.performances){
         // 포인트 적립 및 추가 포인트 적립.
-
-        volumeCredits += Math.max(aPerformance.audience - 30, 0);
+        volumeCredits += volumeCreditsFor(perf);
         
-        if("comedy" === playFor(aPerformance).type) volumeCredits += Math.floor(aPerformance.audience / 5);
-        result += `${playFor(aPerformance).name} : ${format(thisAmount/100)} (${aPerformance.audience}석)\n`;
-        totalAmount += thisAmount;
+        result += `${playFor(perf).name} : ${format(amountFor(perf)/100)} (${perf.audience}석)\n`;
+        totalAmount += amountFor(perf);
     }
     result += `총액 : ${format(totalAmount/100)}\n`;
     result += `적립 : ${volumeCredits}점\n`;
