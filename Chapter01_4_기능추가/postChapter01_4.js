@@ -17,10 +17,18 @@ function statement(invoice, plays){
         return result;
     }
     function totalVolumeCredits(data) {
-        return data.performances.reduce((total, p) => total + p.volumeCredits, 0);
+        let volumeCredits = 0;
+        for(let perf of data.performances){
+            volumeCredits += perf.volumeCredits;
+        }
+        return volumeCredits;
     }
     function totalAmount(data){
-        return data.performances.reduce((total, p) => total + p.amount, 0);
+        let totalAmount = 0;
+        for(let perf of data.performances){
+            totalAmount+= perf.amount;
+        }
+        return totalAmount;
     }
     function playFor(aPerformance){
         return plays[aPerformance.playID];
