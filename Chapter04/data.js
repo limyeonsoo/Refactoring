@@ -10,3 +10,4 @@ function sampleProvinceData(){
         price: 20
     }
 }
+export default sampleProvinceData;
